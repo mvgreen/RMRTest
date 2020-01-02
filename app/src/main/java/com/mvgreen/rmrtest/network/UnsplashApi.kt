@@ -8,29 +8,29 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface   UnsplashApi {
+interface UnsplashApi {
     @GET("/search/photos")
     fun searchPhotos(
-        @Query("client_id") clientId: String,
         @Query("query") query: String,
         @Query("page") page: Int,
-        @Query("per_page") pageSize: Int
+        @Query("per_page") pageSize: Int,
+        @Query("client_id") clientId: String = CLIENT_ID
     ): Call<SearchPhotoResult>
 
     @GET("/search/collections")
     fun searchCollections(
-        @Query("client_id") clientId: String,
         @Query("query") query: String,
         @Query("page") page: Int,
-        @Query("per_page") pageSize: Int
+        @Query("per_page") pageSize: Int,
+        @Query("client_id") clientId: String = CLIENT_ID
     ): Call<SearchCollectionResult>
 
     @GET("/collections/{collectionId}/photos")
     fun showCollection(
         @Path("collectionId") collectionId: Int,
-        @Query("client_id") clientId: String,
         @Query("page") page: Int,
-        @Query("per_page") pageSize: Int
+        @Query("per_page") pageSize: Int,
+        @Query("client_id") clientId: String = CLIENT_ID
     ): Call<List<UnsplashPhoto>>
 
     companion object {

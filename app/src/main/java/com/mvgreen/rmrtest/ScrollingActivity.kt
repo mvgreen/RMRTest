@@ -32,7 +32,7 @@ class ScrollingActivity : AppCompatActivity() {
         val api = (application as UnsplashApplication).unsplashApi
         var result: Response<List<UnsplashPhoto>>? = null
         thread {
-            result = api.showCollection(9042810, UnsplashApi.CLIENT_ID, 1, 10).execute()
+            result = api.showCollection(9042810, 1, 10).execute()
         }.join()
 
         val res = result
