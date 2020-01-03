@@ -1,11 +1,16 @@
 package com.mvgreen.rmrtest
 
 import android.app.Application
-import com.mvgreen.rmrtest.network.UnsplashApi
+import com.mvgreen.rmrtest.model.network.UnsplashApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class UnsplashApplication : Application() {
+
+    companion object {
+        lateinit var instance : UnsplashApplication
+    }
+
     private lateinit var retrofit: Retrofit
     private lateinit var _unsplashApi: UnsplashApi
     val unsplashApi: UnsplashApi
@@ -13,6 +18,7 @@ class UnsplashApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
         retrofit = Retrofit.Builder()
             .baseUrl("https://api.unsplash.com")
             .addConverterFactory(GsonConverterFactory.create())

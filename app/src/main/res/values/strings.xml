@@ -17,7 +17,7 @@
         "Bold, graphic, intentional.\n\n"
 
         "The foundational elements of print based design typography, grids, space, scale, color, "
-        "and use of imagery guide visual treatments. These elements do far more than please the "
+        "and use of imagery guide visual treatments. https://stackoverflow.com/questions/2734270/how-to-make-links-in-a-textview-clickable These elements do far more than please the "
         "eye. They create hierarchy, meaning, and focus. Deliberate color choices, edge to edge "
         "imagery, large scale typography, and intentional white space create a bold and graphic "
         "interface that immerse the user in the experience.\n"
@@ -90,4 +90,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="image_item">Image item</string>
 </resources>
