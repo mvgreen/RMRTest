@@ -1,4 +1,4 @@
-package com.mvgreen.rmrtest.network.json_objects
+package com.mvgreen.rmrtest.model.network.json_objects
 
 data class SearchPhotoResult(
     val total: Int,

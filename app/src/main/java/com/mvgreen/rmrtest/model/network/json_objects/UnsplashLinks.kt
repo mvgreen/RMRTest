@@ -1,4 +1,4 @@
-package com.mvgreen.rmrtest.network.json_objects
+package com.mvgreen.rmrtest.model.network.json_objects
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

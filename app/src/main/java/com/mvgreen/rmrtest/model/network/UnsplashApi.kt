@@ -1,8 +1,8 @@
-package com.mvgreen.rmrtest.network
+package com.mvgreen.rmrtest.model.network
 
-import com.mvgreen.rmrtest.network.json_objects.SearchCollectionResult
-import com.mvgreen.rmrtest.network.json_objects.SearchPhotoResult
-import com.mvgreen.rmrtest.network.json_objects.UnsplashPhoto
+import com.mvgreen.rmrtest.model.network.json_objects.SearchCollectionResult
+import com.mvgreen.rmrtest.model.network.json_objects.SearchPhotoResult
+import com.mvgreen.rmrtest.model.network.json_objects.UnsplashPhoto
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -12,24 +12,24 @@ interface UnsplashApi {
     @GET("/search/photos")
     fun searchPhotos(
         @Query("query") query: String,
-        @Query("page") page: Int,
-        @Query("per_page") pageSize: Int,
+        @Query("page") page: Int = 1,
+        @Query("per_page") pageSize: Int = 10,
         @Query("client_id") clientId: String = CLIENT_ID
     ): Call<SearchPhotoResult>
 
     @GET("/search/collections")
     fun searchCollections(
         @Query("query") query: String,
-        @Query("page") page: Int,
-        @Query("per_page") pageSize: Int,
+        @Query("page") page: Int = 1,
+        @Query("per_page") pageSize: Int = 10,
         @Query("client_id") clientId: String = CLIENT_ID
     ): Call<SearchCollectionResult>
 
     @GET("/collections/{collectionId}/photos")
     fun showCollection(
         @Path("collectionId") collectionId: Int,
-        @Query("page") page: Int,
-        @Query("per_page") pageSize: Int,
+        @Query("page") page: Int = 1,
+        @Query("per_page") pageSize: Int = 10,
         @Query("client_id") clientId: String = CLIENT_ID
     ): Call<List<UnsplashPhoto>>
 
