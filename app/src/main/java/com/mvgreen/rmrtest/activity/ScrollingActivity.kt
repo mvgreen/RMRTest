@@ -22,11 +22,6 @@ class ScrollingActivity : AppCompatActivity() {
 
         viewModel = ViewModelProviders.of(this).get(UnsplashViewModel::class.java)
 
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.content, SearchFragment())
-            .commit()
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -1,39 +1,93 @@
 package com.mvgreen.rmrtest.model
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.mvgreen.rmrtest.model.network.json_objects.SearchCollectionResult
-import com.mvgreen.rmrtest.model.network.json_objects.SearchPhotoResult
+import com.mvgreen.rmrtest.UnsplashApplication
+import com.mvgreen.rmrtest.model.network.UnsplashApi
+import com.mvgreen.rmrtest.model.network.json_objects.ResultListItem
+import com.mvgreen.rmrtest.model.network.json_objects.UnsplashCollection
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashPhoto
+import kotlin.concurrent.thread
 
 object Repository {
 
-    val searchPhotoResult: MutableLiveData<SearchPhotoResult?> = MutableLiveData()
-    val searchCollectionResult: MutableLiveData<SearchCollectionResult?> = MutableLiveData()
-    val collectionContent: MutableLiveData<List<UnsplashPhoto>?> = MutableLiveData()
-    private lateinit var currentQuery: String
+    private data class LiveList<T : ResultListItem>(
+        val liveDataList: MutableLiveData<List<T>?> = MutableLiveData(),
+        var listPage: Int = 1,
+        val updateFun: (page: Int) -> List<T>?
+    )
 
-    fun searchPhotos(query: String) {
-        TODO()
-//        if (!this::searchResult.isInitialized)
-//            searchResult = liveData {
-//                val response = UnsplashApplication.instance.unsplashApi.searchPhotos(query).execute()
-//                if (response.isSuccessful && response.body() != null)
-//                    emit(response.body()!!)
-//                else
-//                    emit(SearchPhotoResult(0, 0, listOf()))
-//            }
-//        return searchResult
+    private val unsplashApi: UnsplashApi by lazy { UnsplashApplication.instance.unsplashApi }
+
+    private val photoList = LiveList { page ->
+        with(unsplashApi.searchPhotos(currentQuery, page).execute()) {
+            return@LiveList if (isSuccessful && body() != null) body()!!.results
+            else null
+        }
+    }
+    private val collectionList = LiveList { page ->
+        with(unsplashApi.searchCollections(currentQuery, page).execute()) {
+            return@LiveList if (isSuccessful && body() != null) body()!!.results
+            else null
+        }
+
+    }
+    private val contentList = LiveList { page ->
+        with(unsplashApi.showCollection(currentCollectionId, page).execute()) {
+            return@LiveList if (isSuccessful && body() != null) body()
+            else null
+        }
     }
 
-    fun loadNextPhotos() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    val searchPhotoResult: LiveData<List<UnsplashPhoto>?>
+        get() = photoList.liveDataList
+    val searchCollectionResult: LiveData<List<UnsplashCollection>?>
+        get() = collectionList.liveDataList
+    val collectionContent: LiveData<List<UnsplashPhoto>?>
+        get() = contentList.liveDataList
+
+    private var currentQuery: String = ""
+    private var currentCollectionId: Int = -1
+
+    fun performSearch(query: String) {
+        currentQuery = query
+        photoList.listPage = 1
+        collectionList.listPage = 1
+        thread {
+            photoList.apply { liveDataList.postValue(updateFun(1)) }
+        }
+        thread {
+            collectionList.apply { liveDataList.postValue(updateFun(1)) }
+        }
     }
 
-    fun loadNextCollections() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun openCollection(id: Int) {
+        currentCollectionId = id
+        contentList.listPage = 1
+        thread {
+            contentList.apply { liveDataList.postValue(updateFun(1)) }
+        }
     }
 
-    fun loadPhotosFromCollection(id: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun <T : ResultListItem> loadNext(liveData: LiveData<List<T>?>) {
+        if (currentQuery.isEmpty())
+            throw IllegalStateException("Query is empty!")
+        val liveList = when {
+            liveData === photoList.liveDataList -> photoList
+            liveData === collectionList.liveDataList -> collectionList
+            liveData === contentList.liveDataList -> contentList
+            else -> throw IllegalArgumentException("Parameter 'liveData' must be one of Repository's properties")
+        }
+        thread {
+            liveList.listPage++
+            val response = liveList.updateFun(liveList.listPage)
+            @Suppress("UNCHECKED_CAST")
+            if (response != null) {
+                val oldData = liveList.liveDataList.value ?: listOf()
+                val newData = oldData + response
+                (liveList.liveDataList as MutableLiveData<List<ResultListItem>>).postValue(newData)
+            }
+        }
     }
+
 }

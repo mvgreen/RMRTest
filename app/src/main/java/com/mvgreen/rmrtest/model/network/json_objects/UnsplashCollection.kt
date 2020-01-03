@@ -16,4 +16,4 @@ data class UnsplashCollection(
     val cover_photo: UnsplashPhoto,
     val user: UnsplashUser,
     val links: UnsplashLinks
-    ) : Parcelable
+    ) : Parcelable, ResultListItem
