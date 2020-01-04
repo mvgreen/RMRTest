@@ -58,11 +58,8 @@ class TabActivity : AppCompatActivity() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (!query.isNullOrEmpty())
                     viewModel.performSearch(query)
-                supportActionBar?.title = when {
-                    query.isNullOrEmpty() -> supportActionBar?.title
-                    query.length > 15 -> query.substring(0, 16) + "..."
-                    else -> query
-                }
+                supportActionBar?.title = if (query.isNullOrEmpty()) supportActionBar?.title
+                else query
                 onBackPressed()
                 onBackPressed()
                 return true
