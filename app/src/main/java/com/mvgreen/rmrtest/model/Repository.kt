@@ -7,6 +7,7 @@ import com.mvgreen.rmrtest.model.network.UnsplashApi
 import com.mvgreen.rmrtest.model.network.json_objects.ResultListItem
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashCollection
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashPhoto
+import java.io.IOException
 import kotlin.concurrent.thread
 
 object Repository {
@@ -20,22 +21,33 @@ object Repository {
     private val unsplashApi: UnsplashApi by lazy { UnsplashApplication.instance.unsplashApi }
 
     private val photoList = LiveList { page ->
-        with(unsplashApi.searchPhotos(currentQuery, page).execute()) {
-            return@LiveList if (isSuccessful && body() != null) body()!!.results
-            else null
+        try {
+            with(unsplashApi.searchPhotos(currentQuery, page).execute()) {
+                return@LiveList if (isSuccessful && body() != null) body()!!.results
+                else null
+            }
+        } catch (e: IOException) {
+            return@LiveList null
         }
     }
     private val collectionList = LiveList { page ->
-        with(unsplashApi.searchCollections(currentQuery, page).execute()) {
-            return@LiveList if (isSuccessful && body() != null) body()!!.results
-            else null
+        try {
+            with(unsplashApi.searchCollections(currentQuery, page).execute()) {
+                return@LiveList if (isSuccessful && body() != null) body()!!.results
+                else null
+            }
+        } catch (e: IOException) {
+            return@LiveList null
         }
-
     }
     private val contentList = LiveList { page ->
-        with(unsplashApi.showCollection(currentCollectionId, page).execute()) {
-            return@LiveList if (isSuccessful && body() != null) body()
-            else null
+        try {
+            with(unsplashApi.showCollection(currentCollectionId, page).execute()) {
+                return@LiveList if (isSuccessful && body() != null) body()
+                else null
+            }
+        } catch (e: IOException) {
+            return@LiveList null
         }
     }
 
@@ -69,6 +81,7 @@ object Repository {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <T : ResultListItem> loadNext(liveData: LiveData<List<T>?>) {
         if (currentQuery.isEmpty())
             throw IllegalStateException("Query is empty!")
@@ -82,12 +95,9 @@ object Repository {
             liveList.listPage++
             val response = liveList.updateFun(liveList.listPage)
             @Suppress("UNCHECKED_CAST")
-            if (response != null) {
-                val oldData = liveList.liveDataList.value ?: listOf()
-                val newData = oldData + response
-                (liveList.liveDataList as MutableLiveData<List<ResultListItem>>).postValue(newData)
-            }
+            val oldData = liveList.liveDataList.value ?: listOf()
+            val newData = oldData + (response ?: listOf())
+            (liveList.liveDataList as MutableLiveData<List<ResultListItem>>).postValue(newData)
         }
     }
-
 }

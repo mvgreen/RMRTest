@@ -43,7 +43,7 @@ class SearchFragment<T : ResultListItem> : Fragment() {
         with(recycler) {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(this@SearchFragment.context)
-            adapter = PagingAdapter(this@SearchFragment, itemSource, itemType)
+            adapter = PagingAdapter(this@SearchFragment, this, itemSource, itemType)
 
             // Observe list to load new items on time
             recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
