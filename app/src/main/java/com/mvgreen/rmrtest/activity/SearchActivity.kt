@@ -11,6 +11,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.tabs.TabLayout
+import com.mvgreen.rmrtest.EXTRA_COLLECTION_ID
+import com.mvgreen.rmrtest.EXTRA_PHOTO_URL
 import com.mvgreen.rmrtest.R
 import com.mvgreen.rmrtest.fragment.ListFragment
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashCollection
@@ -96,11 +98,8 @@ class SearchActivity : AppCompatActivity() {
     inner class SectionsPagerAdapter(fm: FragmentManager) :
         FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-        val EXTRA_PHOTO_URL = "EXTRA_PHOTO_URL"
-        val EXTRA_COLLECTION_ID = "EXTRA_COLLECTION_ID"
-
         private val searchPhotoListFragment =
-            ListFragment.newInstance(viewModel.searchPhotoResult, UnsplashPhoto::class.java) { item, _ ->
+            ListFragment.newInstance(viewModel, viewModel.searchPhotoResult, UnsplashPhoto::class.java) { item, _ ->
                 startActivity(Intent(this@SearchActivity, FullscreenActivity::class.java).apply {
                     putExtra(
                         EXTRA_PHOTO_URL,
@@ -109,7 +108,7 @@ class SearchActivity : AppCompatActivity() {
                 })
             }
         private val searchCollectionFragment =
-            ListFragment.newInstance(viewModel.searchCollectionResult, UnsplashCollection::class.java) { item, _ ->
+            ListFragment.newInstance(viewModel, viewModel.searchCollectionResult, UnsplashCollection::class.java) { item, _ ->
                 startActivity(Intent(this@SearchActivity, CollectionContentActivity::class.java).apply {
                     putExtra(EXTRA_COLLECTION_ID, item.id)
                 })

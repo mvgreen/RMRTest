@@ -1,13 +1,12 @@
 package com.mvgreen.rmrtest.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import com.mvgreen.rmrtest.model.Repository
 import com.mvgreen.rmrtest.model.network.json_objects.ResultListItem
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashCollection
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashPhoto
 
-class SearchViewModel : ViewModel() {
+class SearchViewModel : UnsplashViewModel() {
 
     /**
      * LiveData objects for possible queries to model
@@ -25,7 +24,7 @@ class SearchViewModel : ViewModel() {
     /**
      * Loads next page of the given list.
      */
-    fun <T : ResultListItem> loadNextPageOf(source: LiveData<List<T>?>) {
+    override fun <T : ResultListItem> loadNextPageOf(source: LiveData<List<T>?>) {
         Repository.loadNext(source)
     }
 

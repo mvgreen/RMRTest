@@ -5,21 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.mvgreen.rmrtest.R
 import com.mvgreen.rmrtest.model.network.json_objects.ResultListItem
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashCollection
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashPhoto
-import com.mvgreen.rmrtest.viewmodel.SearchViewModel
+import com.mvgreen.rmrtest.viewmodel.UnsplashViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.live_list_item.view.*
 
 class PagingListAdapter<T : ResultListItem>(
-    private val fragment: Fragment,
+    private val activity: FragmentActivity,
+    private val viewModel: UnsplashViewModel,
     private val liveData: LiveData<List<T>?>,
     private val itemType: Class<T>,
     private val onItemClick: (item: T, itemType: Class<T>) -> Unit
@@ -34,16 +34,16 @@ class PagingListAdapter<T : ResultListItem>(
 
     init {
         updateItems(liveData.value)
-        liveData.observe(fragment, Observer {
+        liveData.observe(activity, Observer {
             if (it.isNullOrEmpty())
                 Toast.makeText(
-                    fragment.context,
-                    "Server response is empty, check internet connection and make another query",
+                    activity,
+                    "Server response is empty, check internet connection or try another query",
                     Toast.LENGTH_LONG
                 ).show()
-            if (it == items)
+            if (it == actualItems)
                 Toast.makeText(
-                    fragment.context,
+                    activity,
                     "Server response is empty, check internet connection and scroll the list another time",
                     Toast.LENGTH_LONG
                 ).show()
@@ -85,13 +85,13 @@ class PagingListAdapter<T : ResultListItem>(
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
         Picasso.get()
             .load(items[position].urls.small)
-            .placeholder(fragment.resources.getDrawable(R.drawable.baseline_image_24, null))
+            .placeholder(activity.resources.getDrawable(R.drawable.baseline_image_24, null))
             .centerCrop()
             .fit()
             .into(holder.itemView.image_holder)
 
-        holder.itemView.title.apply {
-            text = if (itemType == UnsplashPhoto::class.java)
+        holder.itemView.apply {
+            title.text = if (itemType == UnsplashPhoto::class.java)
                 items[position].description ?: "..."
             else
                 (actualItems[position] as UnsplashCollection).title
@@ -104,8 +104,7 @@ class PagingListAdapter<T : ResultListItem>(
             return
         //Toast.makeText(fragment.context, "Loading next page...", Toast.LENGTH_SHORT).show()
         loadingInProgress = true
-        val vm = ViewModelProviders.of(fragment.activity!!).get(SearchViewModel::class.java)
-        vm.loadNextPageOf(liveData)
+        viewModel.loadNextPageOf(liveData)
     }
 
 }

@@ -12,13 +12,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mvgreen.rmrtest.R
 import com.mvgreen.rmrtest.model.network.json_objects.ResultListItem
 import com.mvgreen.rmrtest.view.PagingListAdapter
+import com.mvgreen.rmrtest.viewmodel.CollectionContentViewModel
 import com.mvgreen.rmrtest.viewmodel.SearchViewModel
+import com.mvgreen.rmrtest.viewmodel.UnsplashViewModel
 import kotlinx.android.synthetic.main.fragment_search.*
 
 class ListFragment<T : ResultListItem> : Fragment() {
 
     companion object {
         fun <T : ResultListItem> newInstance(
+            viewModel: UnsplashViewModel,
             itemSource: LiveData<List<T>?>,
             itemType: Class<T>,
             onItemClick: (item: T, itemType: Class<T>) -> Unit
@@ -50,7 +53,13 @@ class ListFragment<T : ResultListItem> : Fragment() {
         with(recycler) {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(this@ListFragment.context)
-            adapter = PagingListAdapter(this@ListFragment, itemSource, itemType, onItemClick)
+            adapter = PagingListAdapter(
+                this@ListFragment.activity!!,
+                viewModel,
+                itemSource,
+                itemType,
+                onItemClick
+            )
 
             // Observe list to load new items on time
             addOnScrollListener(object : RecyclerView.OnScrollListener() {

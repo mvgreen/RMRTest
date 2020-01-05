@@ -5,6 +5,9 @@ import com.mvgreen.rmrtest.model.network.UnsplashApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+val EXTRA_PHOTO_URL = "EXTRA_PHOTO_URL"
+val EXTRA_COLLECTION_ID = "EXTRA_COLLECTION_ID"
+
 class UnsplashApplication : Application() {
 
     companion object {
