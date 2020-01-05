@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mvgreen.rmrtest.R
 import com.mvgreen.rmrtest.model.network.json_objects.ResultListItem
 import com.mvgreen.rmrtest.view.PagingListAdapter
-import com.mvgreen.rmrtest.viewmodel.UnsplashViewModel
+import com.mvgreen.rmrtest.viewmodel.SearchViewModel
 import kotlinx.android.synthetic.main.fragment_search.*
 
 class ListFragment<T : ResultListItem> : Fragment() {
@@ -31,7 +31,7 @@ class ListFragment<T : ResultListItem> : Fragment() {
         }
     }
 
-    private lateinit var viewModel: UnsplashViewModel
+    private lateinit var viewModel: SearchViewModel
     private lateinit var itemSource: LiveData<List<T>?>
     private lateinit var itemType: Class<T>
 
@@ -44,7 +44,7 @@ class ListFragment<T : ResultListItem> : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(activity!!).get(UnsplashViewModel::class.java)
+        viewModel = ViewModelProviders.of(activity!!).get(SearchViewModel::class.java)
 
         // RecyclerView setup
         with(recycler) {

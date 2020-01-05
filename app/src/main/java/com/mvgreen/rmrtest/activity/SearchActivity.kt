@@ -10,18 +10,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.ViewModelProviders
-import androidx.viewpager.widget.PagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.mvgreen.rmrtest.R
 import com.mvgreen.rmrtest.fragment.ListFragment
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashCollection
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashPhoto
-import com.mvgreen.rmrtest.viewmodel.UnsplashViewModel
-import kotlinx.android.synthetic.main.activity_tab.*
+import com.mvgreen.rmrtest.viewmodel.SearchViewModel
+import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.toolbar_search.*
 
 
-class TabActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity() {
 
     /**
      * The [androidx.viewpager.widget.PagerAdapter] that will provide
@@ -32,14 +31,14 @@ class TabActivity : AppCompatActivity() {
      * androidx.fragment.app.FragmentStatePagerAdapter.
      */
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
-    private lateinit var viewModel: UnsplashViewModel
+    private lateinit var viewModel: SearchViewModel
     private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this).get(UnsplashViewModel::class.java)
-        setContentView(R.layout.activity_tab)
+        viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
+        setContentView(R.layout.activity_search)
 
         setSupportActionBar(toolbar)
         // Create the adapter that will return a fragment for each of the three
@@ -55,7 +54,7 @@ class TabActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_tab, menu)
+        menuInflater.inflate(R.menu.menu_search, menu)
         searchView = menu.findItem(R.id.action_search).actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -102,7 +101,7 @@ class TabActivity : AppCompatActivity() {
 
         private val searchPhotoListFragment =
             ListFragment.newInstance(viewModel.searchPhotoResult, UnsplashPhoto::class.java) { item, _ ->
-                startActivity(Intent(this@TabActivity, FullscreenActivity::class.java).apply {
+                startActivity(Intent(this@SearchActivity, FullscreenActivity::class.java).apply {
                     putExtra(
                         EXTRA_PHOTO_URL,
                         item.urls.raw
@@ -111,7 +110,7 @@ class TabActivity : AppCompatActivity() {
             }
         private val searchCollectionFragment =
             ListFragment.newInstance(viewModel.searchCollectionResult, UnsplashCollection::class.java) { item, _ ->
-                startActivity(Intent(this@TabActivity, CollectionContentActivity::class.java).apply {
+                startActivity(Intent(this@SearchActivity, CollectionContentActivity::class.java).apply {
                     putExtra(EXTRA_COLLECTION_ID, item.id)
                 })
             }

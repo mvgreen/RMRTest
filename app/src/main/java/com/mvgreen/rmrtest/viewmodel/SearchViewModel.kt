@@ -7,14 +7,13 @@ import com.mvgreen.rmrtest.model.network.json_objects.ResultListItem
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashCollection
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashPhoto
 
-class UnsplashViewModel : ViewModel() {
+class SearchViewModel : ViewModel() {
 
     /**
      * LiveData objects for possible queries to model
      */
     val searchPhotoResult: LiveData<List<UnsplashPhoto>?> = Repository.searchPhotoResult
     val searchCollectionResult: LiveData<List<UnsplashCollection>?> = Repository.searchCollectionResult
-    val collectionContent: LiveData<List<UnsplashPhoto>?> = Repository.collectionContent
 
     /**
      * Performs a new query to the model.
@@ -28,10 +27,6 @@ class UnsplashViewModel : ViewModel() {
      */
     fun <T : ResultListItem> loadNextPageOf(source: LiveData<List<T>?>) {
         Repository.loadNext(source)
-    }
-
-    fun openCollection(id: Int) {
-        Repository.openCollection(id)
     }
 
 }

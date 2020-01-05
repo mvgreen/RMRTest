@@ -14,7 +14,7 @@ import com.mvgreen.rmrtest.R
 import com.mvgreen.rmrtest.model.network.json_objects.ResultListItem
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashCollection
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashPhoto
-import com.mvgreen.rmrtest.viewmodel.UnsplashViewModel
+import com.mvgreen.rmrtest.viewmodel.SearchViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.live_list_item.view.*
 
@@ -104,7 +104,7 @@ class PagingListAdapter<T : ResultListItem>(
             return
         //Toast.makeText(fragment.context, "Loading next page...", Toast.LENGTH_SHORT).show()
         loadingInProgress = true
-        val vm = ViewModelProviders.of(fragment.activity!!).get(UnsplashViewModel::class.java)
+        val vm = ViewModelProviders.of(fragment.activity!!).get(SearchViewModel::class.java)
         vm.loadNextPageOf(liveData)
     }
 

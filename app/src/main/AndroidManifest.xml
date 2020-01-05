@@ -27,7 +27,7 @@
                 android:theme="@style/FullscreenTheme">
         </activity>
         <activity
-                android:name=".activity.TabActivity"
+                android:name=".activity.SearchActivity"
                 android:label="@string/title_activity_tab"
                 android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
