@@ -1,22 +1,25 @@
 package com.mvgreen.rmrtest.activity
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.PagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.mvgreen.rmrtest.R
-import com.mvgreen.rmrtest.fragment.SearchFragment
+import com.mvgreen.rmrtest.fragment.ListFragment
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashCollection
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashPhoto
 import com.mvgreen.rmrtest.viewmodel.UnsplashViewModel
 import kotlinx.android.synthetic.main.activity_tab.*
 import kotlinx.android.synthetic.main.toolbar_search.*
-import java.lang.IllegalArgumentException
+
 
 class TabActivity : AppCompatActivity() {
 
@@ -94,10 +97,29 @@ class TabActivity : AppCompatActivity() {
     inner class SectionsPagerAdapter(fm: FragmentManager) :
         FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
+        val EXTRA_PHOTO_URL = "EXTRA_PHOTO_URL"
+        val EXTRA_COLLECTION_ID = "EXTRA_COLLECTION_ID"
+
+        private val searchPhotoListFragment =
+            ListFragment.newInstance(viewModel.searchPhotoResult, UnsplashPhoto::class.java) { item, _ ->
+                startActivity(Intent(this@TabActivity, FullscreenActivity::class.java).apply {
+                    putExtra(
+                        EXTRA_PHOTO_URL,
+                        item.urls.raw
+                    )
+                })
+            }
+        private val searchCollectionFragment =
+            ListFragment.newInstance(viewModel.searchCollectionResult, UnsplashCollection::class.java) { item, _ ->
+                startActivity(Intent(this@TabActivity, CollectionContentActivity::class.java).apply {
+                    putExtra(EXTRA_COLLECTION_ID, item.id)
+                })
+            }
+
         override fun getItem(position: Int): Fragment {
             return when (position) {
-                0 -> SearchFragment.newInstance(viewModel.searchPhotoResult, UnsplashPhoto::class.java)
-                1 -> SearchFragment.newInstance(viewModel.searchCollectionResult, UnsplashCollection::class.java)
+                0 -> searchPhotoListFragment
+                1 -> searchCollectionFragment
                 else -> throw IllegalArgumentException("Parameter 'position' must be either 0 or 1")
             }
         }

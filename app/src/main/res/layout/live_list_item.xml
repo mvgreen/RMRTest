@@ -4,11 +4,23 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="151pt">
-    <ImageView
+    <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="150pt"
-            android:contentDescription="@string/image_item"
-            android:id="@+id/image_holder"/>
+            android:layout_height="wrap_content">
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="150pt"
+                android:contentDescription="@string/image_item"
+                android:id="@+id/image_holder"/>
+        <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="18pt"
+                android:background="@color/title_overlay"
+                android:textColor="@color/white"
+                android:layout_gravity="bottom"
+        />
+    </FrameLayout>
     <View
             android:layout_width="match_parent"
             android:layout_height="1pt"

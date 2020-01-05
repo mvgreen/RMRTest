@@ -30,4 +30,8 @@ class UnsplashViewModel : ViewModel() {
         Repository.loadNext(source)
     }
 
+    fun openCollection(id: Int) {
+        Repository.openCollection(id)
+    }
+
 }

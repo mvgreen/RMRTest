@@ -18,17 +18,18 @@ import com.mvgreen.rmrtest.viewmodel.UnsplashViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.live_list_item.view.*
 
-class PagingAdapter<T : ResultListItem>(
+class PagingListAdapter<T : ResultListItem>(
     private val fragment: Fragment,
-    private val recyclerView: RecyclerView,
     private val liveData: LiveData<List<T>?>,
-    private val itemType: Class<T>
+    private val itemType: Class<T>,
+    private val onItemClick: (item: T, itemType: Class<T>) -> Unit
 ) :
-    RecyclerView.Adapter<PagingAdapter.ItemHolder>() {
+    RecyclerView.Adapter<PagingListAdapter.ItemHolder>() {
 
     class ItemHolder(item: View) : RecyclerView.ViewHolder(item)
 
     private lateinit var items: List<UnsplashPhoto>
+    private lateinit var actualItems: List<T>
     private var loadingInProgress = false
 
     init {
@@ -48,7 +49,6 @@ class PagingAdapter<T : ResultListItem>(
                 ).show()
             updateItems(it)
         })
-
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -56,10 +56,12 @@ class PagingAdapter<T : ResultListItem>(
         when (itemType) {
             UnsplashPhoto::class.java -> {
                 items = (newItems as List<UnsplashPhoto>?) ?: listOf()
+                actualItems = (items as List<T>?) ?: listOf()
                 Log.d("PAGING ADAPTER", "source is photo list")
             }
             UnsplashCollection::class.java -> {
-                items = (newItems as List<UnsplashCollection>?)?.map { it.cover_photo } ?: listOf()
+                actualItems = newItems ?: listOf()
+                items = (actualItems as List<UnsplashCollection>).map { it.cover_photo }
                 Log.d("PAGING ADAPTER", "source is collection list")
             }
             else ->
@@ -87,6 +89,14 @@ class PagingAdapter<T : ResultListItem>(
             .centerCrop()
             .fit()
             .into(holder.itemView.image_holder)
+
+        holder.itemView.title.apply {
+            text = if (itemType == UnsplashPhoto::class.java)
+                items[position].description ?: "..."
+            else
+                (actualItems[position] as UnsplashCollection).title
+            setOnClickListener { onItemClick(actualItems[position], itemType) }
+        }
     }
 
     fun updateListIfNeeded(lastItem: Int) {
