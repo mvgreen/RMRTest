@@ -62,7 +62,7 @@ class ListFragment<T : ResultListItem> : Fragment() {
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    val lastItem = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                    val lastItem = (layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
                     // Send notification to adapter
                     (adapter as PagingListAdapter<*>).updateListIfNeeded(lastItem)
                 }

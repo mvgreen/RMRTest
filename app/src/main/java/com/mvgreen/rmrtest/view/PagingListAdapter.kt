@@ -36,6 +36,7 @@ class PagingListAdapter<T : ResultListItem>(
     init {
         updateItems(liveList.value)
         liveList.observe(activity, Observer {
+            loadingInProgress = false
             val isBadResult = liveList.isBadResult
             if (isBadResult) {
                 if (it == null)
@@ -72,7 +73,6 @@ class PagingListAdapter<T : ResultListItem>(
                 throw IllegalArgumentException("Unsupported ResultListItem implementation")
         }
         notifyDataSetChanged()
-        loadingInProgress = false
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
