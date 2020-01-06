@@ -1,5 +1,7 @@
 package com.mvgreen.rmrtest.model
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.mvgreen.rmrtest.UnsplashApplication
 import com.mvgreen.rmrtest.model.network.UnsplashApi
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashCollection
@@ -53,6 +55,17 @@ object Repository {
                 null
             }
             content.updateList(result, page)
+        }
+    }
+
+    fun getPhotoOfTheDay(content: MutableLiveData<List<UnsplashPhoto>?>) {
+        thread {
+            val result: List<UnsplashPhoto>? = try {
+                unsplashApi.loadPhotoOfTheDay().execute().body()
+            } catch (e: IOException) {
+                null
+            }
+            content.postValue(result)
         }
     }
 }

@@ -107,4 +107,7 @@
     <string name="photo_info_template">
         "Width: %1$d px\nHeight: %2$d px\nDescription: \"%3$s\"\nURL: %4$s"
     </string>
+    <string name="title_activity_main">Unsplash explorer</string>
+    <string name="photo_of_the_day">PHOTO OF THE DAY</string>
+    <string name="try_again">Try again</string>
 </resources>

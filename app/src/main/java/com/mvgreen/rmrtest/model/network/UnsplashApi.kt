@@ -33,6 +33,13 @@ interface UnsplashApi {
         @Query("client_id") clientId: String = CLIENT_ID
     ): Call<List<UnsplashPhoto>>
 
+    @GET("/collections/317099/photos")
+    fun loadPhotoOfTheDay(
+        @Query("page") page: Int = 1,
+        @Query("per_page") pageSize: Int = 1,
+        @Query("client_id") clientId: String = CLIENT_ID
+    ) : Call<List<UnsplashPhoto>>
+
     companion object {
         const val CLIENT_ID = "a16beab0b93f63952dde7d37843827a3a2a7d17144af288e160dd36101a42398"
     }

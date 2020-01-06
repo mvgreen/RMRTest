@@ -41,7 +41,6 @@ class SearchActivity : AppCompatActivity() {
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
         // Set up the ViewPager with the sections adapter.
         container.adapter = mSectionsPagerAdapter
-
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
         invalidateOptionsMenu()
@@ -56,12 +55,14 @@ class SearchActivity : AppCompatActivity() {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_search, menu)
         searchView = menu.findItem(R.id.action_search).actionView as SearchView
+        searchView.isIconified = false
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (!query.isNullOrEmpty())
                     viewModel.newQuery(query)
-                supportActionBar?.title = if (query.isNullOrEmpty()) supportActionBar?.title
-                else query
+                else
+                    return true
+                supportActionBar?.title = if (query.isNullOrEmpty()) supportActionBar?.title else query
                 if (!searchView.isIconified) {
                     onBackPressed()
                     onBackPressed()
