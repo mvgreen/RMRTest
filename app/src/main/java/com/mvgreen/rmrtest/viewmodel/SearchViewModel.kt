@@ -20,7 +20,6 @@ class SearchViewModel : UnsplashViewModel() {
         val onItemClick: (Context, T) -> Unit
     )
 
-    lateinit var searchView: SearchView
     lateinit var searchQuery: String
 
     private val foundPhotoList: LiveList<UnsplashPhoto> = LiveList()

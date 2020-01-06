@@ -1,6 +1,8 @@
 package com.mvgreen.rmrtest.activity
 
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SearchView
@@ -21,51 +23,61 @@ import kotlinx.android.synthetic.main.toolbar_search.*
 
 class SearchActivity : AppCompatActivity() {
 
+    companion object {
+        private const val SAVED_QUERY = "SAVED_QUERY"
+    }
+
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
+    lateinit var searchView: SearchView
     private val viewModel: SearchViewModel by lazy { ViewModelProviders.of(this).get(SearchViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         setSupportActionBar(toolbar)
-    }
-
-    override fun onResume() {
-        super.onResume()
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
+        viewModel.searchQuery = savedInstanceState?.getString(SAVED_QUERY, "") ?: ""
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
-
         // Set up the ViewPager with the sections adapter.
         container.adapter = mSectionsPagerAdapter
 
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
+        invalidateOptionsMenu()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(SAVED_QUERY, viewModel.searchQuery)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_search, menu)
-        viewModel.searchView = menu.findItem(R.id.action_search).actionView as SearchView
-        viewModel.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView = menu.findItem(R.id.action_search).actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (!query.isNullOrEmpty())
                     viewModel.newQuery(query)
                 supportActionBar?.title = if (query.isNullOrEmpty()) supportActionBar?.title
                 else query
-                onBackPressed()
-                onBackPressed()
+                if (!searchView.isIconified) {
+                    onBackPressed()
+                    onBackPressed()
+                }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?) = false
         })
+        searchView.setQuery(viewModel.searchQuery, true)
         return true
     }
 
     override fun onBackPressed() {
-        if (!viewModel.searchView.isIconified)
-            viewModel.searchView.isIconified = true
+        if (!searchView.isIconified)
+            searchView.isIconified = true
         else
             super.onBackPressed()
     }
@@ -78,7 +90,6 @@ class SearchActivity : AppCompatActivity() {
 
         return super.onOptionsItemSelected(item)
     }
-
 
     /**
      * A [FragmentPagerAdapter] that returns a fragment corresponding to
