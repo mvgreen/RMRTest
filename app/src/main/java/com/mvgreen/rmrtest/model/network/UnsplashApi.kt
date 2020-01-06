@@ -10,7 +10,7 @@ import retrofit2.http.Query
 
 interface UnsplashApi {
     @GET("/search/photos")
-    fun searchPhotos(
+    fun findPhotos(
         @Query("query") query: String,
         @Query("page") page: Int = 1,
         @Query("per_page") pageSize: Int = 10,
@@ -18,7 +18,7 @@ interface UnsplashApi {
     ): Call<SearchPhotoResult>
 
     @GET("/search/collections")
-    fun searchCollections(
+    fun findCollections(
         @Query("query") query: String,
         @Query("page") page: Int = 1,
         @Query("per_page") pageSize: Int = 10,

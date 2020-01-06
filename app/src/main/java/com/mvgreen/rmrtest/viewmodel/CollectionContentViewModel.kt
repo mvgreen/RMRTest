@@ -1,20 +1,24 @@
 package com.mvgreen.rmrtest.viewmodel
 
-import androidx.lifecycle.LiveData
 import com.mvgreen.rmrtest.model.Repository
 import com.mvgreen.rmrtest.model.network.json_objects.ResultListItem
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashPhoto
 
 class CollectionContentViewModel : UnsplashViewModel() {
 
-    val collectionContent: LiveData<List<UnsplashPhoto>?> = Repository.collectionContent
+    private var id = -1
+    val contentList: LiveList<UnsplashPhoto> = LiveList()
+    val collectionContent: LiveList<UnsplashPhoto> = contentList
 
     fun openCollection(id: Int) {
-        Repository.openCollection(id)
+        this.id = id
+        Repository.loadCollection(id, 1, contentList)
     }
 
-    override fun <T : ResultListItem> loadNextPageOf(source: LiveData<List<T>?>) {
-        Repository.loadNext(collectionContent)
+    override fun <T : ResultListItem> loadNextPageOf(source: LiveList<T>) {
+        if (contentList != source)
+            throw IllegalArgumentException("Unknown LiveData object")
+        Repository.loadCollection(id, contentList.listPage + 1, contentList)
     }
 
 }

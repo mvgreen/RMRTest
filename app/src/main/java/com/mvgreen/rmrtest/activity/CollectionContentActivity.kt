@@ -18,18 +18,19 @@ import java.lang.IllegalStateException
 
 class CollectionContentActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: CollectionContentViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_collection_content)
-        setSupportActionBar(toolbar)
-        viewModel = ViewModelProviders.of(this).get(CollectionContentViewModel::class.java).apply {
+    private val viewModel: CollectionContentViewModel by lazy {
+        ViewModelProviders.of(this).get(CollectionContentViewModel::class.java).apply {
             val id = intent.getIntExtra(EXTRA_COLLECTION_ID, -1)
             if (id == -1)
                 throw IllegalStateException("EXTRA_COLLECTION_ID extra not found!")
             openCollection(id)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_collection_content)
+        setSupportActionBar(toolbar)
         // RecyclerView setup
         with(recycler) {
             setHasFixedSize(true)
@@ -39,7 +40,7 @@ class CollectionContentActivity : AppCompatActivity() {
                 viewModel,
                 viewModel.collectionContent,
                 UnsplashPhoto::class.java
-            ) { item, _ ->
+            ) { _, item ->
                 startActivity(Intent(this@CollectionContentActivity, FullscreenActivity::class.java).apply {
                     putExtra(
                         EXTRA_PHOTO_URL,
@@ -57,7 +58,7 @@ class CollectionContentActivity : AppCompatActivity() {
                     (adapter as PagingListAdapter<*>).updateListIfNeeded(lastItem)
                 }
             })
-    }
+        }
 
     }
 }

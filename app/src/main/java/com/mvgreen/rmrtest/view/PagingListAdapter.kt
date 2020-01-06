@@ -1,18 +1,19 @@
 package com.mvgreen.rmrtest.view
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.mvgreen.rmrtest.R
 import com.mvgreen.rmrtest.model.network.json_objects.ResultListItem
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashCollection
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashPhoto
+import com.mvgreen.rmrtest.viewmodel.LiveList
 import com.mvgreen.rmrtest.viewmodel.UnsplashViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.live_list_item.view.*
@@ -20,9 +21,9 @@ import kotlinx.android.synthetic.main.live_list_item.view.*
 class PagingListAdapter<T : ResultListItem>(
     private val activity: FragmentActivity,
     private val viewModel: UnsplashViewModel,
-    private val liveData: LiveData<List<T>?>,
+    private val liveList: LiveList<T>,
     private val itemType: Class<T>,
-    private val onItemClick: (item: T, itemType: Class<T>) -> Unit
+    private val onItemClick: (context: Context, item: T) -> Unit
 ) :
     RecyclerView.Adapter<PagingListAdapter.ItemHolder>() {
 
@@ -33,20 +34,23 @@ class PagingListAdapter<T : ResultListItem>(
     private var loadingInProgress = false
 
     init {
-        updateItems(liveData.value)
-        liveData.observe(activity, Observer {
-            if (it.isNullOrEmpty())
-                Toast.makeText(
-                    activity,
-                    "Server response is empty, check internet connection or try another query",
-                    Toast.LENGTH_LONG
-                ).show()
-            if (it == actualItems)
-                Toast.makeText(
-                    activity,
-                    "Server response is empty, check internet connection and scroll the list another time",
-                    Toast.LENGTH_LONG
-                ).show()
+        updateItems(liveList.value)
+        liveList.observe(activity, Observer {
+            val isBadResult = liveList.isBadResult
+            if (isBadResult) {
+                if (it == null)
+                    Toast.makeText(
+                        activity,
+                        "Server response is empty, check internet connection or try another query",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                else
+                    Toast.makeText(
+                        activity,
+                        "Server response is empty, check internet connection and scroll the list another time",
+                        Toast.LENGTH_SHORT
+                    ).show()
+            }
             updateItems(it)
         })
     }
@@ -95,7 +99,7 @@ class PagingListAdapter<T : ResultListItem>(
                 items[position].description ?: "..."
             else
                 (actualItems[position] as UnsplashCollection).title
-            setOnClickListener { onItemClick(actualItems[position], itemType) }
+            setOnClickListener { onItemClick(activity, actualItems[position]) }
         }
     }
 
@@ -104,7 +108,7 @@ class PagingListAdapter<T : ResultListItem>(
             return
         //Toast.makeText(fragment.context, "Loading next page...", Toast.LENGTH_SHORT).show()
         loadingInProgress = true
-        viewModel.loadNextPageOf(liveData)
+        viewModel.loadNextPageOf(liveList)
     }
 
 }
