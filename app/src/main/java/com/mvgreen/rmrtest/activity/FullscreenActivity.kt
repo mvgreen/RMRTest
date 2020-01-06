@@ -1,10 +1,12 @@
 package com.mvgreen.rmrtest.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import com.mvgreen.rmrtest.EXTRA_PHOTO_URL
 import com.mvgreen.rmrtest.R
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_fullscreen.*
 
 /**
@@ -56,6 +58,14 @@ class FullscreenActivity : AppCompatActivity() {
 
         // Set up the user interaction to manually show or hide the system UI.
         fullscreen_content.setOnClickListener { toggle() }
+        val maxHeight = resources.displayMetrics.heightPixels
+        val maxWidth = resources.displayMetrics.widthPixels
+        var url = intent.getStringExtra(EXTRA_PHOTO_URL) ?: throw IllegalStateException("Photo URL not found")
+        url += "&w=$maxWidth&h=$maxHeight"
+        Picasso.get()
+            .load(url)
+            .placeholder(resources.getDrawable(R.drawable.baseline_image_24, null))
+            .into(fullscreen_content)
 
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
