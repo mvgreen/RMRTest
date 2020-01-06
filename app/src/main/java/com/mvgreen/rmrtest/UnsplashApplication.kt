@@ -7,6 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val EXTRA_PHOTO_URL = "EXTRA_PHOTO_URL"
 val EXTRA_COLLECTION_ID = "EXTRA_COLLECTION_ID"
+val EXTRA_COLLECTION_TITLE = "EXTRA_COLLECTION_TITLE"
 
 class UnsplashApplication : Application() {
 

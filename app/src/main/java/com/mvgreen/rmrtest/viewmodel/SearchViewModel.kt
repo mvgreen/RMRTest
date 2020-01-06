@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.SearchView
 import com.mvgreen.rmrtest.EXTRA_COLLECTION_ID
+import com.mvgreen.rmrtest.EXTRA_COLLECTION_TITLE
 import com.mvgreen.rmrtest.EXTRA_PHOTO_URL
 import com.mvgreen.rmrtest.activity.CollectionContentActivity
 import com.mvgreen.rmrtest.activity.FullscreenActivity
@@ -38,6 +39,7 @@ class SearchViewModel : UnsplashViewModel() {
             FragmentData(foundCollectionList, UnsplashCollection::class.java) { context, item ->
                 context.startActivity(Intent(context, CollectionContentActivity::class.java).apply {
                     putExtra(EXTRA_COLLECTION_ID, item.id)
+                    putExtra(EXTRA_COLLECTION_TITLE, item.title)
                 })
             }
         )

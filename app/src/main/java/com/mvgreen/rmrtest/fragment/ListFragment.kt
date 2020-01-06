@@ -44,7 +44,6 @@ class ListFragment<T : ResultListItem> : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        Log.d("TEST", "ONACTIVITYCREATED")
         vm.fragmentId = arguments?.getInt(FRAGMENT_ID) ?: throw IllegalStateException("Fragment ID not found!")
         vm.activityViewModel = ViewModelProviders.of(activity!!).get(SearchViewModel::class.java)
         // RecyclerView setup

@@ -3,11 +3,13 @@ package com.mvgreen.rmrtest.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mvgreen.rmrtest.EXTRA_COLLECTION_ID
+import com.mvgreen.rmrtest.EXTRA_COLLECTION_TITLE
 import com.mvgreen.rmrtest.EXTRA_PHOTO_URL
 import com.mvgreen.rmrtest.R
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashPhoto
@@ -24,6 +26,7 @@ class CollectionContentActivity : AppCompatActivity() {
             val id = intent.getIntExtra(EXTRA_COLLECTION_ID, -1)
             if (id == -1)
                 throw IllegalStateException("EXTRA_COLLECTION_ID extra not found!")
+            collectionTitle = intent.getStringExtra(EXTRA_COLLECTION_TITLE) ?: "..."
             openCollection(id)
         }
     }
@@ -32,6 +35,7 @@ class CollectionContentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_collection_content)
         setSupportActionBar(toolbar)
+        supportActionBar?.title = viewModel.collectionTitle
         // RecyclerView setup
         with(recycler) {
             setHasFixedSize(true)
@@ -60,6 +64,5 @@ class CollectionContentActivity : AppCompatActivity() {
                 }
             })
         }
-
     }
 }

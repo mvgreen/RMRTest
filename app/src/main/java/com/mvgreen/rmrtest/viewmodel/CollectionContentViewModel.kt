@@ -7,6 +7,7 @@ import com.mvgreen.rmrtest.model.network.json_objects.UnsplashPhoto
 class CollectionContentViewModel : UnsplashViewModel() {
 
     private var id = -1
+    var collectionTitle: String = "..."
     val contentList: LiveList<UnsplashPhoto> = LiveList()
     val collectionContent: LiveList<UnsplashPhoto> = contentList
 
