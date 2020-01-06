@@ -2,16 +2,11 @@ package com.mvgreen.rmrtest.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.mvgreen.rmrtest.EXTRA_COLLECTION_ID
-import com.mvgreen.rmrtest.EXTRA_COLLECTION_TITLE
-import com.mvgreen.rmrtest.EXTRA_PHOTO_URL
-import com.mvgreen.rmrtest.R
+import com.mvgreen.rmrtest.*
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashPhoto
 import com.mvgreen.rmrtest.view.PagingListAdapter
 import com.mvgreen.rmrtest.viewmodel.CollectionContentViewModel
@@ -46,10 +41,10 @@ class CollectionContentActivity : AppCompatActivity() {
                 viewModel.collectionContent,
                 UnsplashPhoto::class.java
             ) { _, item ->
-                startActivity(Intent(this@CollectionContentActivity, FullscreenActivity::class.java).apply {
+                startActivity(Intent(this@CollectionContentActivity, FullScreenPhotoActivity::class.java).apply {
                     putExtra(
-                        EXTRA_PHOTO_URL,
-                        item.urls.raw
+                        EXTRA_PHOTO_INFO,
+                        item
                     )
                 })
             }

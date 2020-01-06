@@ -101,7 +101,10 @@
     <string name="section_format">Hello World from section: %1$d</string>
 
     <string name="title_activity_fullscreen">FullscreenActivity</string>
-    <string name="dummy_button">Dummy Button</string>
+    <string name="info_button">Info</string>
     <string name="fullscreen_photo">Fullscreen photo</string>
     <string name="title_activity_collection_content">CollectionContentActivity</string>
+    <string name="photo_info_template">
+        "Width: %1$d px\nHeight: %2$d px\nDescription: \"%3$s\"\nURL: %4$s"
+    </string>
 </resources>

@@ -3,7 +3,8 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context=".activity.FullscreenActivity">
+             android:background="@color/black"
+             tools:context=".activity.FullScreenPhotoActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -30,13 +31,12 @@
                       android:orientation="horizontal"
                       tools:ignore="UselessParent">
 
-            <Button android:id="@+id/dummy_button"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/dummy_button"/>
-
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/photo_info"
+                      android:background="@color/black_overlay"
+                      android:autoLink="web"
+                      android:textColor="@color/white"/>
         </LinearLayout>
     </FrameLayout>
 

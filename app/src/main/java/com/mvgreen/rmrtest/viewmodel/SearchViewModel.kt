@@ -2,12 +2,11 @@ package com.mvgreen.rmrtest.viewmodel
 
 import android.content.Context
 import android.content.Intent
-import android.widget.SearchView
 import com.mvgreen.rmrtest.EXTRA_COLLECTION_ID
 import com.mvgreen.rmrtest.EXTRA_COLLECTION_TITLE
-import com.mvgreen.rmrtest.EXTRA_PHOTO_URL
+import com.mvgreen.rmrtest.EXTRA_PHOTO_INFO
 import com.mvgreen.rmrtest.activity.CollectionContentActivity
-import com.mvgreen.rmrtest.activity.FullscreenActivity
+import com.mvgreen.rmrtest.activity.FullScreenPhotoActivity
 import com.mvgreen.rmrtest.model.Repository
 import com.mvgreen.rmrtest.model.network.json_objects.ResultListItem
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashCollection
@@ -29,10 +28,10 @@ class SearchViewModel : UnsplashViewModel() {
     val fragmentData =
         listOf<FragmentData<out ResultListItem>>(
             FragmentData(foundPhotoList, UnsplashPhoto::class.java) { context, item ->
-                context.startActivity(Intent(context, FullscreenActivity::class.java).apply {
+                context.startActivity(Intent(context, FullScreenPhotoActivity::class.java).apply {
                     putExtra(
-                        EXTRA_PHOTO_URL,
-                        item.urls.raw
+                        EXTRA_PHOTO_INFO,
+                        item
                     )
                 })
             },
