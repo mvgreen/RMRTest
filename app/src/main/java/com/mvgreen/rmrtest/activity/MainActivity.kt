@@ -31,10 +31,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val photoLiveData = MutableLiveData<List<UnsplashPhoto>?>()
+        val photoLiveData = MutableLiveData<UnsplashPhoto?>()
 
         photoLiveData.observe(this, Observer {
-            if (it.isNullOrEmpty()) {
+            if (it == null) {
                 Toast.makeText(
                     this,
                     "Could not load photo of the day, check your internet connection",
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 return@Observer
             }
-            val photo = it[0]
+            val photo = it
 
             val width = resources.displayMetrics.widthPixels
             val height = resources.displayMetrics.heightPixels

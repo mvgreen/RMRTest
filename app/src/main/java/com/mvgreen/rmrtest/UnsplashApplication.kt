@@ -2,6 +2,7 @@ package com.mvgreen.rmrtest
 
 import android.app.Application
 import com.mvgreen.rmrtest.model.network.UnsplashApi
+import pl.droidsonroids.retrofit2.JspoonConverterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -12,7 +13,7 @@ const val EXTRA_COLLECTION_TITLE = "EXTRA_COLLECTION_TITLE"
 class UnsplashApplication : Application() {
 
     companion object {
-        lateinit var instance : UnsplashApplication
+        lateinit var instance: UnsplashApplication
     }
 
     private lateinit var retrofit: Retrofit

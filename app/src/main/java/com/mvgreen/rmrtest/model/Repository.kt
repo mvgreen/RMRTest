@@ -1,15 +1,16 @@
 package com.mvgreen.rmrtest.model
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.mvgreen.rmrtest.UnsplashApplication
 import com.mvgreen.rmrtest.model.network.UnsplashApi
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashCollection
 import com.mvgreen.rmrtest.model.network.json_objects.UnsplashPhoto
 import com.mvgreen.rmrtest.viewmodel.LiveList
-import com.mvgreen.rmrtest.viewmodel.UnsplashViewModel
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.io.IOException
 import kotlin.concurrent.thread
+
 
 object Repository {
 
@@ -58,14 +59,27 @@ object Repository {
         }
     }
 
-    fun getPhotoOfTheDay(content: MutableLiveData<List<UnsplashPhoto>?>) {
+    fun getPhotoOfTheDay(content: MutableLiveData<UnsplashPhoto?>) {
         thread {
-            val result: List<UnsplashPhoto>? = try {
-                unsplashApi.loadPhotoOfTheDay().execute().body()
+            val result: UnsplashPhoto? = try {
+                val photoId = getRealPhotoOfTheDayId()
+                unsplashApi.loadPhotoOfTheDay(photoId).execute().body()
             } catch (e: IOException) {
                 null
             }
             content.postValue(result)
         }
+    }
+
+    private fun getRealPhotoOfTheDayId(): String {
+        val request: Request = Request.Builder()
+            .url("https://unsplash.com")
+            .build()
+
+        val response = OkHttpClient().newCall(request).execute().body()?.string() ?: return ""
+
+        val endIndex = response.indexOf("Photo of the Day") - 2
+        val startIndex = response.lastIndexOf('/', endIndex) + 1
+        return response.substring(startIndex, endIndex)
     }
 }
