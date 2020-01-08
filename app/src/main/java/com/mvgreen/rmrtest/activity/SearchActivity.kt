@@ -1,10 +1,7 @@
 package com.mvgreen.rmrtest.activity
 
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import android.view.Menu
-import android.view.MenuItem
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -20,11 +17,14 @@ import com.mvgreen.rmrtest.viewmodel.SearchViewModel
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.toolbar_search.*
 
-
 class SearchActivity : AppCompatActivity() {
 
     companion object {
+        // Parameter name for savedInstanceState
         private const val SAVED_QUERY = "SAVED_QUERY"
+        // Fragment IDs
+        private const val FRAGMENT_PHOTOS = 0
+        private const val FRAGMENT_COLLECTIONS = 1
     }
 
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
@@ -43,11 +43,13 @@ class SearchActivity : AppCompatActivity() {
         container.adapter = mSectionsPagerAdapter
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
+        // Request to re-initialize toolbar to restore the previous search
         invalidateOptionsMenu()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        // Save search query to restore it later
         outState.putString(SAVED_QUERY, viewModel.searchQuery)
     }
 
@@ -57,39 +59,37 @@ class SearchActivity : AppCompatActivity() {
         searchView = menu.findItem(R.id.action_search).actionView as SearchView
         searchView.isIconified = false
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
+            override fun onQueryTextSubmit(searchQuery: String?): Boolean {
+                // Trim leading and trailing whitespaces
+                val query = searchQuery?.trim()
+                // Send search request
                 if (!query.isNullOrEmpty())
                     viewModel.newQuery(query)
                 else
                     return true
+                // Display query text on toolbar
                 supportActionBar?.title = if (query.isNullOrEmpty()) supportActionBar?.title else query
+                // Collapse searchView after call, it needs to be called twice, at least in Android 5
                 if (!searchView.isIconified) {
-                    onBackPressed()
-                    onBackPressed()
+                    searchView.isIconified = true
+                    searchView.isIconified = true
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?) = false
         })
+        // Restore previous query, if present
         searchView.setQuery(viewModel.searchQuery, true)
         return true
     }
 
     override fun onBackPressed() {
+        // Make searchView collapse if it's opened
         if (!searchView.isIconified)
             searchView.isIconified = true
         else
             super.onBackPressed()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-
-        return super.onOptionsItemSelected(item)
     }
 
     /**
@@ -99,10 +99,8 @@ class SearchActivity : AppCompatActivity() {
     inner class SectionsPagerAdapter(fm: FragmentManager) :
         FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-        val FRAGMENT_PHOTOS = 0
-        val FRAGMENT_COLLECTIONS = 1
-
         override fun getItem(position: Int): Fragment {
+            // Initialize page fragments, the first shows photos, and the second shows collections
             return when (position) {
                 FRAGMENT_PHOTOS -> ListFragment.newInstance<UnsplashPhoto>(
                     FRAGMENT_PHOTOS

@@ -1,25 +1,20 @@
 package com.mvgreen.rmrtest.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mvgreen.rmrtest.R
 import com.mvgreen.rmrtest.model.network.json_objects.ResultListItem
 import com.mvgreen.rmrtest.view.PagingListAdapter
-import com.mvgreen.rmrtest.viewmodel.CollectionContentViewModel
 import com.mvgreen.rmrtest.viewmodel.ListFragmentViewModel
 import com.mvgreen.rmrtest.viewmodel.SearchViewModel
-import com.mvgreen.rmrtest.viewmodel.UnsplashViewModel
 import kotlinx.android.synthetic.main.fragment_search.*
-import java.lang.IllegalStateException
 
 class ListFragment<T : ResultListItem> : Fragment() {
 
@@ -30,6 +25,7 @@ class ListFragment<T : ResultListItem> : Fragment() {
             fragmentId: Int
         ): ListFragment<T> {
             return ListFragment<T>().apply {
+                // Save fragment id to use it during initialization
                 arguments = bundleOf(FRAGMENT_ID to fragmentId)
             }
         }
@@ -44,7 +40,10 @@ class ListFragment<T : ResultListItem> : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        // Initiailize fragment in one of two possible variants, based on passed id
         vm.fragmentId = arguments?.getInt(FRAGMENT_ID) ?: throw IllegalStateException("Fragment ID not found!")
+        // Fragment data stored mostly in ViewModel of parent activity
         vm.activityViewModel = ViewModelProviders.of(activity!!).get(SearchViewModel::class.java)
         // RecyclerView setup
         with(recycler) {

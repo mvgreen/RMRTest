@@ -11,28 +11,46 @@ import okhttp3.Request
 import java.io.IOException
 import kotlin.concurrent.thread
 
-
+/**
+ * General representation of application's Model. It is used to perform API calls.
+ */
 object Repository {
 
     private val unsplashApi: UnsplashApi by lazy { UnsplashApplication.instance.unsplashApi }
 
-    @Suppress("UNCHECKED_CAST")
+    /**
+     * Perform search and load results into [photoResult].
+     * Result is loaded in parts, parameter [page] is used to specify the desired part.
+     * This call is performed in another thread. To receive the result, subscribe to [photoResult]'s updates.
+     * @param query the search query.
+     * @param page result's page, every page contains 10 [UnsplashPhoto]s.
+     * @param photoResult container for result.
+     */
     fun searchPhotos(
         query: String,
         page: Int,
         photoResult: LiveList<UnsplashPhoto>
     ) {
         thread {
+            // Try to load data
             val result: List<UnsplashPhoto>? = try {
                 unsplashApi.findPhotos(query, page).execute().body()?.results
             } catch (e: IOException) {
                 null
             }
+            // Store it into photoResult
             photoResult.updateList(result, page)
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
+    /**
+     * Perform search and load results into [collectionResult].
+     * Result is loaded in parts, parameter [page] is used to specify the desired part.
+     * This call is performed in another thread. To receive the result, subscribe to [collectionResult]'s updates.
+     * @param query the search query.
+     * @param page result's page, every page contains 10 [UnsplashPhoto]s.
+     * @param collectionResult container for result.
+     */
     fun searchCollections(
         query: String,
         page: Int,
@@ -48,6 +66,14 @@ object Repository {
         }
     }
 
+    /**
+     * Load photos from selected collection.
+     * Result is loaded in parts, parameter [page] is used to specify the desired part.
+     * This call is performed in another thread. To receive the result, subscribe to [content]'s updates.
+     * @param id collection ID.
+     * @param page result's page, every page contains 10 [UnsplashPhoto]s.
+     * @param content container for result.
+     */
     fun loadCollection(id: Int, page: Int, content: LiveList<UnsplashPhoto>) {
         thread {
             val result: List<UnsplashPhoto>? = try {
@@ -59,11 +85,16 @@ object Repository {
         }
     }
 
+    /**
+     * Load 'Photo of the Day'. This call is performed in another thread.
+     * To receive the result, subscribe to [content]'s updates.
+     * @param content container for result.
+     */
     fun getPhotoOfTheDay(content: MutableLiveData<UnsplashPhoto?>) {
         thread {
             val result: UnsplashPhoto? = try {
-                val photoId = getRealPhotoOfTheDayId()
-                unsplashApi.loadPhotoOfTheDay(photoId).execute().body()
+                val photoId = getPhotoId()
+                unsplashApi.loadPhoto(photoId).execute().body()
             } catch (e: IOException) {
                 null
             }
@@ -71,7 +102,10 @@ object Repository {
         }
     }
 
-    private fun getRealPhotoOfTheDayId(): String {
+    /**
+     * Parse main page's html to extract the 'Photo of the Day' id.
+     */
+    private fun getPhotoId(): String {
         val request: Request = Request.Builder()
             .url("https://unsplash.com")
             .build()

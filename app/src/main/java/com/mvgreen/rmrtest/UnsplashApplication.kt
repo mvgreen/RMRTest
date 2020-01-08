@@ -2,10 +2,10 @@ package com.mvgreen.rmrtest
 
 import android.app.Application
 import com.mvgreen.rmrtest.model.network.UnsplashApi
-import pl.droidsonroids.retrofit2.JspoonConverterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+// Constants for passing extras between activities
 const val EXTRA_PHOTO_INFO = "EXTRA_PHOTO_INFO"
 const val EXTRA_COLLECTION_ID = "EXTRA_COLLECTION_ID"
 const val EXTRA_COLLECTION_TITLE = "EXTRA_COLLECTION_TITLE"
@@ -18,6 +18,7 @@ class UnsplashApplication : Application() {
 
     private lateinit var retrofit: Retrofit
     private lateinit var _unsplashApi: UnsplashApi
+    // Backing field to avoid null checks
     val unsplashApi: UnsplashApi
         get() = _unsplashApi
 

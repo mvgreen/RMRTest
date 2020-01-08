@@ -18,10 +18,12 @@ class CollectionContentActivity : AppCompatActivity() {
 
     private val viewModel: CollectionContentViewModel by lazy {
         ViewModelProviders.of(this).get(CollectionContentViewModel::class.java).apply {
+            // Initialize ViewModel with intent parameters
             val id = intent.getIntExtra(EXTRA_COLLECTION_ID, -1)
             if (id == -1)
                 throw IllegalStateException("EXTRA_COLLECTION_ID extra not found!")
             collectionTitle = intent.getStringExtra(EXTRA_COLLECTION_TITLE) ?: "..."
+            // Request to load collection
             openCollection(id)
         }
     }
@@ -41,6 +43,7 @@ class CollectionContentActivity : AppCompatActivity() {
                 viewModel.collectionContent,
                 UnsplashPhoto::class.java
             ) { _, item ->
+                // On click, show selected photo in another activity
                 startActivity(Intent(this@CollectionContentActivity, FullScreenPhotoActivity::class.java).apply {
                     putExtra(
                         EXTRA_PHOTO_INFO,
